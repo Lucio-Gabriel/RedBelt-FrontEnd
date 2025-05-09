@@ -5,15 +5,15 @@ import api from "../api/axios";
 const Alarms = () => {
   const [alarms, setAlarms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchAlarms = async () => {
       try {
-        const response = await api.get("/alarms"); 
-        setAlarms(response.data.data); 
+        const response = await api.get("/alarms");
+        setAlarms(response.data.data);
       } catch (error) {
-        setError("Erro ao obter mensagens!"); 
+        setError("Erro ao obter mensagens!");
         console.error(error);
       } finally {
         setLoading(false);
@@ -36,12 +36,15 @@ const Alarms = () => {
   return (
     <div className="w-full px-5">
       <h1 className="flex justify-center items-center text-2xl font-normal mb-4">
-        Bem vindo ao sistema de <span className="flex gap-2 pl-2 font-semibold">Alarmes <Siren className="w-7 h-7 text-red-400 animate-pulse"/></span>
+        Bem vindo ao sistema de
+        <span className="flex gap-2 pl-2 font-semibold">
+          Alarmes <Siren className="w-7 h-7 text-red-400 animate-pulse" />
+        </span>
       </h1>
 
       <div className="flex items-end justify-end mb-3">
         <a
-          href="/alarms/create"
+          href="/alarm-create"
           className="flex gap-1.5 font-normal bg-gray-700 hover:bg-gray-500 duration-300 text-white hover:text-slate-200 py-2 px-4 rounded-lg transition"
         >
           Criar Alarme <Plus />
