@@ -93,13 +93,13 @@ const Alarms = () => {
                 <td className="text-white px-6 py-4">
                   <div className="flex items-center gap-4">
                     <a
-                      href="#"
+                      href="/alarm-show"
                       className="text-slate-300 hover:text-slate-400 duration-300"
                     >
                       <Eye className="w-5 h-5" />
                     </a>
                     <a
-                      href="#"
+                      href="/alarm-edit"
                       className="text-slate-300 hover:text-slate-400 duration-300"
                     >
                       <Pencil className="w-5 h-5" />

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Check, Undo2, Siren } from "lucide-react";
 
-function CreateAlarmPage() {
+function EditAlarmPage() {
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -27,7 +27,7 @@ function CreateAlarmPage() {
         className="bg-[#1F2937] p-8 rounded-xl shadow-lg w-full max-w-xl space-y-6"
       >
         <h2 className="flex items-center justify-center gap-2 text-2xl font-bold text-center text-white">
-          Cadastrar Alarme
+          Editar Alarme
           <span>
             <Siren className="w-7 h-7 text-red-400 animate-pulse" />
           </span>
@@ -146,5 +146,4 @@ function CreateAlarmPage() {
     </div>
   );
 }
-
-export default CreateAlarmPage;
+export default EditAlarmPage;
