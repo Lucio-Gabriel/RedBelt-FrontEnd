@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreateAlarmPage from "./pages/CreateAlarmPage.jsx";
+import EditAlarmPage from "./pages/EditAlarmPage.jsx";
+import ShowAlarmPage from "./pages/ShowAlarmPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +15,14 @@ const router = createBrowserRouter([
   {
     path: "/alarm-create",
     element: <CreateAlarmPage />,
+  },
+  {
+    path: "/alarm-edit",
+    element: <EditAlarmPage />,
+  },
+  {
+    path: "/alarm-show",
+    element: <ShowAlarmPage />,
   },
 ]);
 
