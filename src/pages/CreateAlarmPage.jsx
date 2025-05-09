@@ -1,0 +1,150 @@
+import React, { useState } from "react";
+import { Check, Undo2, Siren } from "lucide-react";
+
+function CreateAlarmPage() {
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    date: "",
+    criticidade: "",
+    status: "",
+    ativo: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(form); // Aqui você pode trocar por envio ao backend
+  };
+
+  return (
+    <div className="min-h-screen bg-[#242424] text-white flex items-center justify-center p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[#1F2937] p-8 rounded-xl shadow-lg w-full max-w-xl space-y-6"
+      >
+        <h2 className="flex items-center justify-center gap-2 text-2xl font-bold text-center text-white">
+          Cadastrar Alarme
+          <span>
+            <Siren className="w-7 h-7 text-red-400 animate-pulse" />
+          </span>
+        </h2>
+
+        <div>
+          <label className="block text-sm font-semibold mb-1">Nome</label>
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            className="w-full px-4 py-2 bg-[#14161a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Digite o nome do alarme"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-1">Descrição</label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows="3"
+            className="w-full px-4 py-2 bg-[#14161a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Digite a descrição"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-1">
+            Data da Ocorrência
+          </label>
+          <input
+            type="date"
+            name="date"
+            value={form.date}
+            onChange={handleChange}
+            className="w-full px-4 py-2 bg-[#14161a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-semibold mb-1">
+              Criticidade
+            </label>
+            <select
+              name="criticidade"
+              value={form.criticidade}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-[#14161a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Selecione</option>
+              <option value="Crítico">Crítico</option>
+              <option value="Alto">Alto</option>
+              <option value="Baixo">Baixo</option>
+              <option value="Info">Info</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-1">Status</label>
+            <select
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-[#14161a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Selecione</option>
+              <option value="Aberto">Aberto</option>
+              <option value="Em Andamento">Em Andamento</option>
+              <option value="Resolvido">Resolvido</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold mb-1">Ativo</label>
+            <select
+              name="ativo"
+              value={form.ativo}
+              onChange={handleChange}
+              className="w-full px-4 py-2 bg-[#14161a] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Selecione</option>
+              <option value="Ativo">Ativo</option>
+              <option value="Desativado">Desativado</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-3 text-center pt-4">
+          <a
+            href="/"
+            className="flex gap-2 bg-red-500 hover:bg-red-600 text-white hover:text-slate-300 transition-colors px-6 py-2 rounded-md font-semibold"
+          >
+            <Undo2 className="w-5" />
+            Cancelar
+          </a>
+
+          <button
+            type="submit"
+            className="flex gap-1.5 font-normal bg-gray-700 hover:bg-gray-500 duration-300 text-white hover:text-slate-200 py-2 px-4 rounded-lg transition"
+          >
+            Salvar Alarme
+            <Check className="w-5" />
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+export default CreateAlarmPage;
