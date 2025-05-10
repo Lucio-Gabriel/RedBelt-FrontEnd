@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Check, Undo2, Siren } from "lucide-react";
 
+const url = import.meta.env.VITE_API_URL;
+
 function CreateAlarmPage() {
   const [form, setForm] = useState({
     name: "",
@@ -15,9 +17,81 @@ function CreateAlarmPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form); // Aqui você pode trocar por envio ao backend
+
+    console.log(url);
+
+    try {
+      const responseAlarmTypes = await fetch(`${url}/alarms-types`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          description: form.description,
+        }),
+      });
+
+      const dataAlarmTypes = await responseAlarmTypes.json();
+
+      alert(dataAlarmTypes.message || "Alarme criado com sucesso!");
+
+      const alarmTypeId = dataAlarmTypes.data.ID;
+
+      const data = {
+        alarms_types_id: Number(alarmTypeId),
+        criticality: Number(form.criticidade),
+        status: Number(form.status),
+        active: Number(form.ativo),
+        date_occurred: form.date,
+      };
+
+      console.log(data);
+
+      const responseAlarms = await fetch(`${url}/alarms`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          alarms_types_id: Number(alarmTypeId),
+          criticality: form.criticidade,
+          status: form.status,
+          active: form.ativo,
+          date_occurred: form.date,
+        }),
+      });
+
+      if (!responseAlarms.ok) {
+        console.log(responseAlarms);
+        return responseAlarms;
+      }
+
+      const dataAlarms = await responseAlarms.json();
+
+      console.log(dataAlarms);
+
+      setForm({
+        name: "",
+        description: "",
+        date: "",
+        criticidade: "",
+        status: "",
+        ativo: "",
+      });
+
+      window.location.href = "/";
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        console.log(error.response.data.errors);
+        alert("Erro de validação nos campos.");
+      } else {
+        console.error(error);
+        alert("Erro ao cadastrar alarme.");
+      }
+    }
   };
 
   return (
@@ -86,10 +160,11 @@ function CreateAlarmPage() {
               required
             >
               <option value="">Selecione</option>
-              <option value="Crítico">Crítico</option>
-              <option value="Alto">Alto</option>
-              <option value="Baixo">Baixo</option>
-              <option value="Info">Info</option>
+              <option value="0">Info</option>
+              <option value="1">Baixo</option>
+              <option value="2">Medio</option>
+              <option value="3">Alto</option>
+              <option value="4">Crítico</option>
             </select>
           </div>
 
@@ -103,9 +178,9 @@ function CreateAlarmPage() {
               required
             >
               <option value="">Selecione</option>
-              <option value="Aberto">Aberto</option>
-              <option value="Em Andamento">Em Andamento</option>
-              <option value="Resolvido">Resolvido</option>
+              <option value="1">Aberto</option>
+              <option value="2">Em Andamento</option>
+              <option value="0">Fechado</option>
             </select>
           </div>
 
@@ -119,8 +194,8 @@ function CreateAlarmPage() {
               required
             >
               <option value="">Selecione</option>
-              <option value="Ativo">Ativo</option>
-              <option value="Desativado">Desativado</option>
+              <option value="1">Ativo</option>
+              <option value="0">Desativado</option>
             </select>
           </div>
         </div>
