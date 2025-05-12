@@ -1,12 +1,61 @@
-# React + Vite
+# Front-end — Sistema de Alarmes de Segurança
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este repositório contém a interface web do Sistema de Alarmes de Segurança, desenvolvida com React, Redux, TailwindCSS e integrando com a API desenvolvida em Laravel.
 
-Currently, two official plugins are available:
+## Stack utilizada
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Front-end:** React, Redux Toolkit, Axios, React Router DOM, TailwindCSS, Vite
 
-## Expanding the ESLint configuration
+**Back-end:** PHP, Laravel, MySQL, PHPUnit
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Funcionalidades
+
+- Criação, edição e deleção de alarmes
+- Interface responsiva e moderna com Tailwind
+- Integração total com a API Laravel
+
+## Instalação e Execução
+
+Clone este repositório:
+
+```bash
+  git clone https://github.com/SeuUsuario/RedBelt-FrontEnd.git
+```
+
+Instale as dependências:
+
+```bash
+  npm install
+```
+
+Configure a URL da API:
+No arquivo .env (ou crie um):
+
+```bash
+  VITE_API_URL=http://localhost:8000/api
+```
+
+Inicie o projeto:
+
+```bash
+  npm run dev
+```
+
+Acesse o sistema:
+
+```bash
+  http://localhost:5173
+
+```
+
+## Integração com Back-end
+
+O front-end espera a seguinte estrutura da API (exposta em http://localhost:8000/api):
+
+- GET /alarmes — listagem
+
+- POST /alarmes — criação
+
+- PUT /alarmes/{id} — atualização
+
+- DELETE /alarmes/{id} — deleção
