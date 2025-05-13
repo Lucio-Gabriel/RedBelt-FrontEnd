@@ -36,8 +36,6 @@ function CreateAlarmPage() {
 
       const dataAlarmTypes = await responseAlarmTypes.json();
 
-      alert(dataAlarmTypes.message || "Alarme criado com sucesso!");
-
       const alarmTypeId = dataAlarmTypes.data.ID;
 
       const data = {
