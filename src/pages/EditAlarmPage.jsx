@@ -1,9 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Check, Undo2, Siren } from "lucide-react";
-
+import { useParams } from "react-router-dom";
+import api from "../api/axios";
 const url = import.meta.env.VITE_API_URL;
 
-function CreateAlarmPage() {
+function EditAlarmPage() {
+  const { id } = useParams();
+
+  const [alarm, setAlarm] = useState([]);
+
+  useEffect(() => {
+    const fetchAlarm = async () => {
+      try {
+        const response = await api.get(`/alarms/${id}`);
+        setAlarm(response.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAlarm();
+  }, [setAlarm, id]);
+
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -13,18 +31,33 @@ function CreateAlarmPage() {
     ativo: "",
   });
 
+  const formatDateToInput = (dateStr) => {
+    const [day, month, year] = dateStr.split("/");
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    if (alarm && alarm.Tipo_de_Alarme) {
+      setForm({
+        name: alarm.Tipo_de_Alarme.Nome,
+        description: alarm.Tipo_de_Alarme.Descricao,
+        date: formatDateToInput(alarm.data_da_ocorrencia),
+        criticidade: alarm.Criticidade,
+        status: alarm.Status,
+        ativo: alarm.Ativo,
+      });
+    }
+  }, [alarm]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(url);
-
     try {
-      const responseAlarmTypes = await fetch(`${url}/alarms-types`, {
-        method: "POST",
+      const responseAlarmTypes = await fetch(`${url}/alarms-types/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -38,18 +71,8 @@ function CreateAlarmPage() {
 
       const alarmTypeId = dataAlarmTypes.data.ID;
 
-      const data = {
-        alarms_types_id: Number(alarmTypeId),
-        criticality: Number(form.criticidade),
-        status: Number(form.status),
-        active: Number(form.ativo),
-        date_occurred: form.date,
-      };
-
-      console.log(data);
-
-      const responseAlarms = await fetch(`${url}/alarms`, {
-        method: "POST",
+      const responseAlarms = await fetch(`${url}/alarms/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -99,7 +122,7 @@ function CreateAlarmPage() {
         className="bg-[#1F2937] p-8 rounded-xl shadow-lg w-full max-w-xl space-y-6"
       >
         <h2 className="flex items-center justify-center gap-2 text-2xl font-bold text-center text-white">
-          Cadastrar Alarme
+          Editar Alarme
           <span>
             <Siren className="w-7 h-7 text-red-400 animate-pulse" />
           </span>
@@ -219,5 +242,4 @@ function CreateAlarmPage() {
     </div>
   );
 }
-
-export default CreateAlarmPage;
+export default EditAlarmPage;

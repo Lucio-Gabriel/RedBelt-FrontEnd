@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Eye, Pencil, Trash, Plus, Siren } from "lucide-react";
 import api from "../api/axios";
+import DeleteModal from "./DeleteModal";
+const url = import.meta.env.VITE_API_URL;
 
 const Alarms = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [alarmIdToDelete, setAlarmIdToDelete] = useState(null);
+
   const [alarms, setAlarms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -32,6 +37,30 @@ const Alarms = () => {
   if (error) {
     return <p>{error}</p>;
   }
+
+  const handleSubmit = async (id) => {
+    try {
+      const responseAlarmTypes = await fetch(`${url}/alarms-types/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!responseAlarmTypes.ok) {
+        console.log(responseAlarmTypes);
+        return;
+      }
+
+      window.location.href = "/";
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        console.log(error.response.data.errors);
+      } else {
+        console.error(error);
+      }
+    }
+  };
 
   return (
     <div className="w-full px-5">
@@ -76,13 +105,13 @@ const Alarms = () => {
             </tr>
           </thead>
           <tbody>
-            {alarms.map((alarm) => (
+            {alarms.map((alarm, index) => (
               <tr
-                key={alarm.id}
+                key={index}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
               >
                 <td className="text-white px-6 py-4">
-                  {alarm["Tipo de Alarme"]?.Nome || "Sem nome"}
+                  {alarm.Tipo_de_Alarme?.Nome || "Nome"}
                 </td>
                 <td className="text-white px-6 py-4">{alarm.Criticidade}</td>
                 <td className="text-white px-6 py-4">{alarm.Status}</td>
@@ -93,29 +122,46 @@ const Alarms = () => {
                 <td className="text-white px-6 py-4">
                   <div className="flex items-center gap-4">
                     <a
-                      href="#"
+                      href={`/alarm-show/${alarm.Tipo_de_Alarme.ID}`}
                       className="text-slate-300 hover:text-slate-400 duration-300"
                     >
                       <Eye className="w-5 h-5" />
                     </a>
+
                     <a
-                      href="#"
+                      href={`/alarm-edit/${alarm.Tipo_de_Alarme.ID}`}
                       className="text-slate-300 hover:text-slate-400 duration-300"
                     >
                       <Pencil className="w-5 h-5" />
                     </a>
-                    <a
-                      href="#"
-                      className="text-slate-300 hover:text-slate-400 duration-300"
+                    <button
+                      onClick={() => {
+                        setAlarmIdToDelete(alarm.Tipo_de_Alarme.ID);
+                        setModalOpen(true);
+                      }}
+                      className="text-slate-300 bg-transparent hover:text-slate-400 hover:border-none duration-300"
                     >
                       <Trash className="w-5 h-5" />
-                    </a>
+                    </button>
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        <DeleteModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setModalOpen(false);
+            setAlarmIdToDelete(null);
+          }}
+          onConfirm={() => {
+            if (alarmIdToDelete) {
+              handleSubmit(alarmIdToDelete);
+            }
+          }}
+        />
       </div>
     </div>
   );
