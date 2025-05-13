@@ -122,7 +122,7 @@ const Alarms = () => {
                 <td className="text-white px-6 py-4">
                   <div className="flex items-center gap-4">
                     <a
-                      href="/alarm-show"
+                      href={`/alarm-show/${alarm.Tipo_de_Alarme.ID}`}
                       className="text-slate-300 hover:text-slate-400 duration-300"
                     >
                       <Eye className="w-5 h-5" />
@@ -139,7 +139,7 @@ const Alarms = () => {
                         setAlarmIdToDelete(alarm.Tipo_de_Alarme.ID);
                         setModalOpen(true);
                       }}
-                      className="text-slate-300 bg-none hover:text-slate-400 duration-300"
+                      className="text-slate-300 bg-transparent hover:text-slate-400 hover:border-none duration-300"
                     >
                       <Trash className="w-5 h-5" />
                     </button>

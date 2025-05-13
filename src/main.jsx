@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     element: <EditAlarmPage />,
   },
   {
-    path: "/alarm-show",
+    path: "/alarm-show/:id",
     element: <ShowAlarmPage />,
   },
 ]);
