@@ -1,7 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Check, Undo2, Siren } from "lucide-react";
+import { useParams } from "react-router-dom";
+import api from "../api/axios";
+const url = import.meta.env.VITE_API_URL;
 
 function EditAlarmPage() {
+  const { id } = useParams();
+
+  const [alarm, setAlarm] = useState([]);
+
+  useEffect(() => {
+    const fetchAlarm = async () => {
+      try {
+        const response = await api.get(`/alarms/${id}`);
+        setAlarm(response.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAlarm();
+  }, [setAlarm, id]);
+
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -11,13 +31,88 @@ function EditAlarmPage() {
     ativo: "",
   });
 
+  const formatDateToInput = (dateStr) => {
+    const [day, month, year] = dateStr.split("/");
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    if (alarm && alarm.Tipo_de_Alarme) {
+      setForm({
+        name: alarm.Tipo_de_Alarme.Nome,
+        description: alarm.Tipo_de_Alarme.Descricao,
+        date: formatDateToInput(alarm.data_da_ocorrencia),
+        criticidade: alarm.Criticidade,
+        status: alarm.Status,
+        ativo: alarm.Ativo,
+      });
+    }
+  }, [alarm]);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form); // Aqui você pode trocar por envio ao backend
+    try {
+      const responseAlarmTypes = await fetch(`${url}/alarms-types/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          description: form.description,
+        }),
+      });
+
+      const dataAlarmTypes = await responseAlarmTypes.json();
+
+      const alarmTypeId = dataAlarmTypes.data.ID;
+
+      const responseAlarms = await fetch(`${url}/alarms/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          alarms_types_id: Number(alarmTypeId),
+          criticality: form.criticidade,
+          status: form.status,
+          active: form.ativo,
+          date_occurred: form.date,
+        }),
+      });
+
+      if (!responseAlarms.ok) {
+        console.log(responseAlarms);
+        return responseAlarms;
+      }
+
+      const dataAlarms = await responseAlarms.json();
+
+      console.log(dataAlarms);
+
+      setForm({
+        name: "",
+        description: "",
+        date: "",
+        criticidade: "",
+        status: "",
+        ativo: "",
+      });
+
+      window.location.href = "/";
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        console.log(error.response.data.errors);
+        alert("Erro de validação nos campos.");
+      } else {
+        console.error(error);
+        alert("Erro ao cadastrar alarme.");
+      }
+    }
   };
 
   return (
@@ -86,10 +181,11 @@ function EditAlarmPage() {
               required
             >
               <option value="">Selecione</option>
-              <option value="Crítico">Crítico</option>
-              <option value="Alto">Alto</option>
-              <option value="Baixo">Baixo</option>
-              <option value="Info">Info</option>
+              <option value="0">Info</option>
+              <option value="1">Baixo</option>
+              <option value="2">Medio</option>
+              <option value="3">Alto</option>
+              <option value="4">Crítico</option>
             </select>
           </div>
 
@@ -103,9 +199,9 @@ function EditAlarmPage() {
               required
             >
               <option value="">Selecione</option>
-              <option value="Aberto">Aberto</option>
-              <option value="Em Andamento">Em Andamento</option>
-              <option value="Resolvido">Resolvido</option>
+              <option value="1">Aberto</option>
+              <option value="2">Em Andamento</option>
+              <option value="0">Fechado</option>
             </select>
           </div>
 
@@ -119,8 +215,8 @@ function EditAlarmPage() {
               required
             >
               <option value="">Selecione</option>
-              <option value="Ativo">Ativo</option>
-              <option value="Desativado">Desativado</option>
+              <option value="1">Ativo</option>
+              <option value="0">Desativado</option>
             </select>
           </div>
         </div>
